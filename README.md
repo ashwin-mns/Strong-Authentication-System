@@ -10,6 +10,26 @@ A high-security, modern web application for password authentication built with P
 - **JSON Persistence**: Stores hashed credentials in a local `database.json` file, ensuring user accounts persist across restarts.
 - **Safe State Handling**: Minimal exposure of sensitive data in memory.
 
+- ## 📖 Project Brief
+
+**SecureAuth** is a high-security authentication system designed to combine military-grade protection with a premium, modern user experience.
+
+### 🛡️ High-Level Security
+- **Argon2id Hashing**: Uses the world's most secure hashing algorithm to protect passwords.
+- **HMAC Peppering**: Adds a secret "pepper" key at the server level for "blind" protection.
+- **Zxcvbn Validation**: Estimates real-world crack-time to ensure truly strong passwords.
+- **Secure Recovery**: Cryptographically secure 6-digit **OTP** (One-Time Password) recovery flow.
+
+### 🌈 Premium User Interface
+- **Glassmorphism**: Frosted-glass aesthetics with soft blurs and animated background blobs.
+- **UX Excellence**: Implemented the **Post/Redirect/Get** pattern to prevent browser "Form Resubmission" warnings on refresh.
+- **Real-time Feedback**: Interactive password strength meter and visibility toggle.
+
+### 📂 Comprehensive Profiles
+- Manages full user profiles including **First/Last Name**, **DOB**, **Gender**, **Phone**, and **Gmail**.
+- **Persistence**: Local JSON storage ensures accounts remain active across system restarts.
+
+
 ## 🌈 UI/UX Features
 
 - **Glassmorphism Design**: A premium "frosted glass" light theme with backdrop blurs and floating interactive background blobs.
