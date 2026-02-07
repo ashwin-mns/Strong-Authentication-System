@@ -1,0 +1,17 @@
+{
+    "testuser": {
+        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$F9vcntwmn6nfd14yvJvs5Q$8zbvzleowwS25VeE7kwMhCqwh5gePxzYItH9OtR2NZw"
+    },
+    "ASHWIN": {
+        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$5HqmEsugUtTjWl//RXOYXA$uYwfNtZWqTxj/bHHHrDtWo+o/dSYgdSL5A3ciGfRrYE"
+    },
+    "ashleyachuppi": {
+        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$4SLcLvOs63VVyJ+MJWfhpw$5ESM/lXyGKKROC62/FynCjujVBp2cpBUa6t9849+4PA",
+        "first_name": "ashley",
+        "last_name": "achuppi",
+        "dob": "2026-02-19",
+        "gender": "Male",
+        "phone": "+918129825016",
+        "email": "kingminion043@gmail.com"
+    }
+}

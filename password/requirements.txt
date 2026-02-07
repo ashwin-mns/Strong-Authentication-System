@@ -1,0 +1,7 @@
+argon2-cffi
+zxcvbn
+fastapi
+uvicorn
+jinja2
+python-multipart
+itsdangerous

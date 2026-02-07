@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureAuth - Glassy Authentication</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <div class="container">
+        {% if logged_in %}
+        <div class="welcome-screen">
+            <h1>Welcome Back!</h1>
+            <p>Hello, <strong>{{ username }}</strong>.</p>
+            <div class="user-profile">
+                <p><strong>Name:</strong> {{ user_data.get('first_name', 'N/A') }} {{ user_data.get('last_name', '') }}
+                </p>
+                <p><strong>Email:</strong> {{ user_data.get('email', 'N/A') }}</p>
+                <p><strong>Phone:</strong> {{ user_data.get('phone', 'N/A') }}</p>
+            </div>
+            <div class="alert alert-success">
+                Access Granted. Strong Encryption Active.
+            </div>
+            <a href="/logout" class="logout-btn">Logout and lock session</a>
+        </div>
+        {% elif active_view == 'forgot' %}
+        <h1>Reset Access</h1>
+        <p style="text-align: center; margin-bottom: 20px;">Enter your registered Email or Phone</p>
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        <form action="/forgot-password" method="POST">
+            <div class="form-group">
+                <label>Email or Phone</label>
+                <input type="text" name="identifier" required placeholder="e.g. user@gmail.com">
+            </div>
+            <button type="submit">Send OTP</button>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" class="small-link">Back to Login</a>
+        </div>
+        {% elif active_view == 'verify_otp' %}
+        <h1>Verify OTP</h1>
+        <p style="text-align: center; margin-bottom: 20px;">Enter the 6-digit code sent to you</p>
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+        <form action="/verify-otp" method="POST">
+            <input type="hidden" name="username" value="{{ request.session.get('recovery_username', '') }}">
+            <div class="form-group">
+                <label>6-Digit OTP</label>
+                <input type="text" name="otp" required maxlength="6" style="text-align: center; letter-spacing: 5px;">
+            </div>
+            <button type="submit">Verify Code</button>
+        </form>
+        {% elif active_view == 'reset_password' %}
+        <h1>New Password</h1>
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+        <form action="/reset-password" method="POST">
+            <input type="hidden" name="username" value="{{ request.session.get('recovery_username', '') }}">
+            <div class="form-group">
+                <label>New Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="new-password" name="password" required>
+                    <span class="toggle-password" onclick="togglePassword('new-password')">👁️</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirm-password" name="confirm_password" required>
+                    <span class="toggle-password" onclick="togglePassword('confirm-password')">👁️</span>
+                </div>
+            </div>
+            <button type="submit">Update Password</button>
+        </form>
+        {% else %}
+        <h1>SecureAuth</h1>
+
+        {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+
+        <div class="tabs">
+            <div id="tab-login" class="tab {{ 'active' if active_tab != 'register' else '' }}"
+                onclick="switchTab('login')">Login</div>
+            <div id="tab-register" class="tab {{ 'active' if active_tab == 'register' else '' }}"
+                onclick="switchTab('register')">Register</div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" action="/login" method="POST" class="{{ 'hidden' if active_tab == 'register' else '' }}">
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" name="username" required placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="login-password" name="password" required placeholder="Enter password">
+                    <span class="toggle-password" onclick="togglePassword('login-password')">👁️</span>
+                </div>
+            </div>
+            <button type="submit">Sign In</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="/forgot-password" class="small-link">Forgot Password?</a>
+            </div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" action="/register" method="POST"
+            class="{{ 'hidden' if active_tab != 'register' else '' }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" required>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender" required
+                        style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.2);">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" name="dob" required>
+            </div>
+            <div class="form-group">
+                <label>Gmail Address</label>
+                <input type="email" name="email" required placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" required placeholder="+1234567890">
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="reg-password" name="password" required>
+                    <span class="toggle-password" onclick="togglePassword('reg-password')">👁️</span>
+                </div>
+                <div class="strength-meter">
+                    <div id="strength-bar" class="strength-bar"></div>
+                </div>
+                <ul id="suggestions" class="suggestions"></ul>
+            </div>
+            <button type="submit">Create Account</button>
+        </form>
+        {% endif %}
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+            const loginTab = document.getElementById('tab-login');
+            const regTab = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                loginTab.classList.add('active');
+                regTab.classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                loginTab.classList.remove('active');
+                regTab.classList.add('active');
+            }
+        }
+
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
+        const passwordInput = document.getElementById('reg-password');
+        const strengthBar = document.getElementById('strength-bar');
+        const suggestionsBox = document.getElementById('suggestions');
+
+        if (passwordInput) {
+            passwordInput.addEventListener('input', () => {
+                const val = passwordInput.value;
+                const result = zxcvbn(val);
+                const score = result.score; // 0-4
+
+                // Update bar
+                const colors = ['#ff4b2b', '#ff9f43', '#feca57', '#4facfe', '#2ecc71'];
+                const widths = ['20%', '40%', '60%', '80%', '100%'];
+
+                if (val.length === 0) {
+                    strengthBar.style.width = '0';
+                } else {
+                    strengthBar.style.width = widths[score];
+                    strengthBar.style.backgroundColor = colors[score];
+                }
+
+                // Update suggestions
+                suggestionsBox.innerHTML = '';
+                if (val.length > 0 && score < 3) {
+                    const suggestions = result.feedback.suggestions;
+                    const warning = result.feedback.warning;
+
+                    if (warning) {
+                        const li = document.createElement('li');
+                        li.textContent = warning;
+                        li.style.fontWeight = 'bold';
+                        suggestionsBox.appendChild(li);
+                    }
+
+                    suggestions.forEach(s => {
+                        const li = document.createElement('li');
+                        li.textContent = s;
+                        suggestionsBox.appendChild(li);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
