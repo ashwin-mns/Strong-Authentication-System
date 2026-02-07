@@ -17,6 +17,13 @@ A high-security, modern web application for password authentication built with P
 - **Responsive Layout**: Designed to look great on all screen sizes.
 - **Real-time Feedback**: Dynamic strength bar and suggestions as you type your password.
 
+- <img width="1919" height="868" alt="Screenshot 2026-02-07 183431" src="https://github.com/user-attachments/assets/b03f243d-eac0-41fd-a2b3-93e51ca6a15f" />
+
+<img width="1892" height="865" alt="Screenshot 2026-02-07 183501" src="https://github.com/user-attachments/assets/de5b86d0-164a-4033-bb11-e40711ae5427" />
+
+<img width="1919" height="866" alt="Screenshot 2026-02-07 183603" src="https://github.com/user-attachments/assets/e8a40b21-2f78-44a9-80d8-6e220f16fc51" />
+
+
 ## 🚀 Getting Started
 
 ### Prerequisites
