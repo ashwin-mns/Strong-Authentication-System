@@ -23,6 +23,7 @@ A high-security, modern web application for password authentication built with P
 
 <img width="1919" height="866" alt="Screenshot 2026-02-07 183603" src="https://github.com/user-attachments/assets/e8a40b21-2f78-44a9-80d8-6e220f16fc51" />
 
+<img width="1919" height="882" alt="Screenshot 2026-02-07 184125" src="https://github.com/user-attachments/assets/e6a45c3e-f2a5-448e-86a7-34a257df957d" />
 
 ## 🚀 Getting Started
 
